@@ -1,4 +1,5 @@
-Slack Notify · Actions · GitHub Marketplace
-https://github.com/marketplace/actions/slack-notify
-A GitHub Action to send a message to a Slack channel.
-
+* GitHub Actions
+**  Slack
+- Slack Notify · Actions · GitHub Marketplace
+  https://github.com/marketplace/actions/slack-notify
+  A GitHub Action to send a message to a Slack channel.
