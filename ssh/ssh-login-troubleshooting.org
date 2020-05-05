@@ -1,0 +1,3 @@
+* ssh login トラブルシューティング
+** サーバに登録してある public key が誤っていないか確かめる
+- EC2 Management Console で対象インスタンスを開き、「キーペア名」を見る。
