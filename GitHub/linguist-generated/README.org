@@ -1,3 +1,5 @@
 https://help.github.com/ja/github/administering-a-repository/customizing-how-changed-files-appear-on-github
 変更したファイルの GitHub での表示方法をカスタマイズする - GitHub ヘルプ
 特定のファイルをデフォルトで diff に表示しない、またはリポジトリの言語として考えないようにするために、 .gitattributes ファイルで linguist-generated 属性を使ってマークできます。
+
+dummy1
