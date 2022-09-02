@@ -1,0 +1,19 @@
+#: rundeck.yml
+---
+- name: local targets
+  hosts: targets
+  remote_user: root
+  become: yes
+
+  tasks:
+  - name: install java packages from yum
+    ansible.builtin.yum:
+      name: java-11-amazon-corretto.x86_64
+      state: present
+  - name: install rundeck 1
+    ansible.builtin.copy:
+      src: install_rundeck.sh
+      dest: /tmp/install_rundeck.sh
+      mode: 755
+  - name: install rundeck 2
+    ansible.builtin.shell: /tmp/install_rundeck.sh 2>&1 | tee /tmp/install_rundeck.txt
