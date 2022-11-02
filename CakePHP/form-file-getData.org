@@ -1,0 +1,144 @@
+#+TITLE: CakePHP4 フォームでアップロードしたファイルを controller で受け取る方法
+#+OPTIONS: ^:nil *:nil \n:nil /:nil h:5
+
+* CakePHP4 フォームでアップロードしたファイルを controller で受け取る方法
+- 1. template に form を記す。
+- /home/ec2-user/workspace/var/www/html/app/templates/Projects/add.php
+- echo $this->Form->create($project, array('type' => 'file'));
+  - ok
+  - view-source:http://xx.xx.xx.xx/projects/add
+    #+BEGIN_EXAMPLE
+    <form enctype="multipart/form-data" method="post" accept-charset="utf-8" action="/projects/add">
+    #+END_EXAMPLE
+  - enctype="multipart/form-data" がある。
+- echo $this->Form->create($project);
+  - ng
+  - view-source:http://xx.xx.xx.xx/projects/add
+    #+BEGIN_EXAMPLE
+    <form method="post" accept-charset="utf-8" action="/projects/add">
+    #+END_EXAMPLE
+  - enctype="multipart/form-data" がない。
+- 2. template に file を記す。
+- /home/ec2-user/workspace/var/www/html/app/templates/Projects/add.php
+- echo $this->Form->control('foo_file', ['type' => 'file']);
+  - ok
+  - view-source:http://xx.xx.xx.xx/projects/add
+    #+BEGIN_EXAMPLE
+    <input type="file" name="foo_file" id="foo-file">
+    #+END_EXAMPLE
+  - name 属性と id 属性がある。
+- echo $this->Form->file('foo_file');
+  - ng
+  - view-source:http://xx.xx.xx.xx/projects/add
+    #+BEGIN_EXAMPLE
+    <input type="file" name="foo_file">
+    #+END_EXAMPLE
+  - name 属性がある。 id 属性がない。
+- 3. controller で getData を使う。
+- 1, 2 を正しく記した場合、 object が返る。
+- 1, 2 を正しく記していない場合、 string が返る。
+- /home/ec2-user/workspace/var/www/html/app/src/Controller/ProjectsController.php
+#+BEGIN_EXAMPLE
+$foo_file = $this->request->getData('foo_file');
+Log::write('debug', 'foo_file is ' . var_export($foo_file, true));
+Log::write('debug', 'gettype(foo_file) is ' . var_export(gettype($foo_file), true));
+#+END_EXAMPLE
+- ログ出力
+#+BEGIN_EXAMPLE
+2022-11-02 01:48:43 debug: foo_file is Laminas\Diactoros\UploadedFile::__set_state(array(
+   'error' => 0,
+   'file' => '/tmp/phpSoWFSW',
+   'moved' => false,
+   'stream' => NULL,
+   'size' => 4727,
+   'clientFilename' => 'foo_project.xml',
+   'clientMediaType' => 'text/xml',
+))
+2022-11-02 01:48:43 debug: gettype(foo_file) is 'object'
+#+END_EXAMPLE
+- 4. controller で getUploadedFile を使う。
+- 1, 2 を正しく記した場合、 object が返る。
+- 1, 2 を正しく記していない場合、 string が返る。
+- /home/ec2-user/workspace/var/www/html/app/src/Controller/ProjectsController.php
+#+BEGIN_EXAMPLE
+$foo_file_object = $this->request->getUploadedFile('foo_file');
+Log::write('debug', 'foo_file_object is ' . var_export($foo_file_object, true));
+Log::write('debug', 'gettype(foo_file_object) is ' . var_export(gettype($foo_file_object), true));
+#+END_EXAMPLE
+- ログ出力
+#+BEGIN_EXAMPLE
+2022-11-02 01:48:43 debug: foo_file_object is Laminas\Diactoros\UploadedFile::__set_state(array(
+   'error' => 0,
+   'file' => '/tmp/phpSoWFSW',
+   'moved' => false,
+   'stream' => NULL,
+   'size' => 4727,
+   'clientFilename' => 'foo_project.xml',
+   'clientMediaType' => 'text/xml',
+))
+2022-11-02 01:48:43 debug: gettype(foo_file_object) is 'object'
+#+END_EXAMPLE
+- 参考
+- https://book.cakephp.org/4/ja/controllers/request-response.html#request-file-uploads
+- ファイルのアップロード
+  #+BEGIN_EXAMPLE
+  アップロードしたファイルは、上で説明した Cake\Http\ServerRequest::getData() メソッドを使用して、
+  リクエスト内容のデータからアクセスすることができます。 例えば、name属性が attachment である
+  input要素のファイルは、以下のようにアクセスできます。
+  $attachment = $this->request->getData('attachment');
+  #+END_EXAMPLE
+- この文章を読んで input 要素に name 属性があればいいと解釈した。
+  実際は id 属性も必要。説明が誤っている？
+- このページは controller の書き方は説明しているが、 template の書き方は説明していない。
+  このページだけ読んでも template の書き方を理解できない。
+- https://book.cakephp.org/4/ja/views/helpers/form.html
+- Form - 4.x
+- フォームの開始
+  #+BEGIN_EXAMPLE
+  Cake\View\Helper\FormHelper::create(mixed $context = null, array $options = [])
+  $options - オプションまたは HTML 属性の配列。
+  #+END_EXAMPLE
+- フォーム作成のためのオプション
+  #+BEGIN_EXAMPLE
+  $options 配列は、ほとんどのフォーム設定が行われる場所です。この特別な
+  配列には、 form タグの生成方法に影響を与えるさまざまなキーと値のペアが
+  含まれます。
+  'type' - 作成するフォームの種類を選択できます。type が未指定の場合、 フォームコンテキストに基づいて自動的に決まります。 有効な値:
+  'file' - フォームの method に POST を設定し、 enctype に "multipart/form-data" を設定します。
+  #+END_EXAMPLE
+- ここを読めば、 view の書き方 手順1 が理解できる。
+- コントロールのオプション
+  #+BEGIN_EXAMPLE
+  FormHelper::control() は、その $options 引数を通して、多数のオプションをサポートしています。 control() 自身のオプションに加えて、生成されたコントロールタイプに対するオプションと HTML 属性を受け付けます。以下は FormHelper::control() で特有のオプションについて説明します。
+  $options['type'] - 生成するためのウィジェットタイプを指定する文字列。 フォームコントロールの作成 にあるフィールド型に加えて、 'file' 、 'password' 、 および HTML5 でサポートされているすべてのタイプを作成することもできます。 'type' を指定することで、モデルの設定を上書きして、コントロールのタイプを強制することができます。 デフォルトは null 。
+  例:
+  echo $this->Form->control('field', ['type' => 'file']);
+  echo $this->Form->control('email', ['type' => 'email']);
+  #+END_EXAMPLE
+- ここを読めば、 view の書き方 手順2 が理解できる。
+- Form->control という書き方はここで初めて見た。他のページでは Form->file などだった。
+- ファイル入力の作成
+  #+BEGIN_EXAMPLE
+  Cake\View\Helper\FormHelper::file(string $fieldName, array $options)
+  $fieldName - 'Modelname.fieldname' の形式のフィールド名。
+  $options - 特定のコントロールのための共通オプション や有効な HTML 属性を含むオプション配列。
+  フォームの中にファイルアップロードフィールドを作成します。 デフォルトで使用されるウィジェットテンプレートは:
+  'file' => '<input type="file" name="{{name}}"{{attrs}}>'
+  フォームにファイルアップロードフィールドを追加するためには、まずフォームの enctype に 'multipart/form-data' がセットされていることを確認してください。
+  まずは、次のように create() メソッドを使用してください。
+  echo $this->Form->create($document, ['enctype' => 'multipart/form-data']);
+  // または
+  echo $this->Form->create($document, ['type' => 'file']);
+  次にフォームのビューファイルに以下のいずれかを追加します。
+  echo $this->Form->control('submittedfile', [
+      'type' => 'file'
+  ]);
+  // または
+  echo $this->Form->file('submittedfile');
+  #+END_EXAMPLE
+- ここの説明では
+  Form->control('submittedfile', ['type' => 'file'])
+  と
+  Form->file('submittedfile')
+  は同じ意味になるそうだ。しかし、実際は異なる。
+  説明が誤っているのか？
