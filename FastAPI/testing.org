@@ -1,0 +1,55 @@
+#+TITLE: 〈FastAPI testing〉
+
+* FastAPI testing
+** FastAPI 公式チュートリアル
+- https://fastapi.tiangolo.com/ja/tutorial/testing/
+- https://fastapi.tiangolo.com/tutorial/testing/
+*** テスト: 例の拡張
+**** 拡張版 FastAPI アプリファイル
+- FastAPI アプリに main_b.py ファイルがあるとします。
+  #+BEGIN_EXAMPLE
+  app = FastAPI()
+  #+END_EXAMPLE
+**** 拡張版テストファイル
+- 次に、先程のものに拡張版のテストを加えた、test_main_b.py を作成します。
+  #+BEGIN_EXAMPLE
+  from fastapi.testclient import TestClient
+  from .main import app
+  client = TestClient(app)
+  #+END_EXAMPLE
+**** 演習
+- チュートリアルに書いてあるとおりに main_b.py ファイルと
+  test_main_b.py を作成して、テストを実行すると、 ImportError で失敗す
+  る。
+- 実行例
+  #+BEGIN_EXAMPLE
+  $ pytest test_main_b.py
+  ____ ERROR collecting test_main_b.py ____
+  ImportError while importing test module '/home/ec2-user/workspace/fastapi/tutorial/test_main_b.py'.
+  Hint: make sure your test modules/packages have valid Python names.
+  Traceback:
+  ../../../.pyenv/versions/3.11.2/lib/python3.11/importlib/__init__.py:126: in import_module
+      return _bootstrap._gcd_import(name[level:], package, level)
+  test_main_b.py:4: in <module>
+      from .main import app
+  E   ImportError: attempted relative import with no known parent package
+  ==== short test summary info ====
+  ERROR test_main_b.py
+  #+END_EXAMPLE
+- from .main import app を from main import app に修正してテストを実行
+  すると、 ImportError は解消するが、 response.status_code が 422 とな
+  りテスト不合格となる。
+- 実行例
+  #+BEGIN_EXAMPLE
+      def test_read_item():
+          response = client.get("/items/foo", headers={"X-Token": "coneofsilence"})
+  >       assert response.status_code == 200
+  E       assert 422 == 200
+  E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+  test_main_b.py:13: AssertionError
+  #+END_EXAMPLE
+- from main import app を from main_b import app に修正してテストを実
+  行すると、 response.status_code が 422 となる現象は解消して、テスト
+  合格となる。
+- チュートリアルに書いてあるソースコードが誤っている？
