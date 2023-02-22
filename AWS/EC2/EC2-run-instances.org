@@ -1,0 +1,30 @@
+#+TITLE: 〈EC2 インスタンス作成〉
+
+* 〈EC2 インスタンス作成〉
+** 前提
+- OS は Amazon Linux 2 。
+- あとからインスタンスタイプを変更する予定がある。
+** チェックリスト
+- Cloudformation テンプレートファイルを用意する。
+  - file:ec2_inspection_cloudformation_template.yaml
+- Cloudformation スタックを作る。
+- Cloudformation スタックの変更セットを実行する。
+- スワップ領域を有効にする。
+  - 参考 https://xtech.nikkei.com/it/article/COLUMN/20130909/503312/
+** テンプレートファイルの内容について把握する
+- パラメータ Ec2ImageId
+  - デフォルトで指定してある id は 2023-02-15 時点で最新の Amazon Linux 2 のAMI ID 。
+  - 今後変わる可能性がある。
+  - スタック実行時点で動的に最新の Amazon Linux 2 の AMI ID を取得する方法もあるが、ここでは採用しない。
+    - スタック実行時点で動的に最新の Amazon Linux 2 の AMI ID を取得する方法を採用したい場合はここを参照。
+      https://dev.classmethod.jp/articles/get-the-latest-amazon-linux-2-ami-id-with-cloudformation/
+- パラメータ KeyName
+  - スタック実行時点でキーペアを選択する。
+- パラメータ EC2Name
+  - スタック実行時点で EC2 インスタンス Name 文字列を入力する。
+- パラメータ EnvName
+  - 開発用、ステージング用、プロダクション用など用途ごとに使い分けるために用いる。
+  - 選択肢を増やしたら、 Mappings にも対応する値を増やす必要がある。
+- Mappings SecurityGroup に記した値はダミー。実在する値に書き換える必要がある。
+- Mappings SubnetId に記した値はダミー。実在する値に書き換える必要がある。
+- EBS のボリュームサイズを変更したい場合はここを書き換える。 VolumeSize: 30
