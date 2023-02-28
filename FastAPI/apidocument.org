@@ -1,0 +1,109 @@
+# -*- coding: utf-8-unix; mode: org; -*-
+#+TITLE: 〈FastAPI API ドキュメントを生成する〉
+
+* FastAPI API ドキュメントを生成する
+** FastAPI 公式チュートリアル
+- https://fastapi.tiangolo.com/ja/tutorial/response-model/
+- https://fastapi.tiangolo.com/ja/tutorial/response-status-code/
+- https://fastapi.tiangolo.com/ja/tutorial/path-operation-configuration/#summary-and-description
+- https://fastapi.tiangolo.com/ja/advanced/path-operation-advanced-configuration/#openapi
+- https://fastapi.tiangolo.com/ja/advanced/additional-responses/
+** パスオペレーションデコレータ
+*** 引数 response_model
+- パスオペレーションデコレータに名前つき引数 response_model を指定すると、返り値の型を定義する。
+- 型の表現には Pydantic model 、リスト、辞書、スカラーを使える。
+- スカラーには integer, boolean などがある。
+- OpenAPI スキーマの responses に反映される。
+- 参考情報
+  - https://fastapi.tiangolo.com/ja/tutorial/response-model/
+**** 例
+***** ソースコード
+#+BEGIN_EXAMPLE
+@app.post("/items/", response_model=Item)
+#+END_EXAMPLE
+***** FastAPI で生成したAPIドキュメント
+- http://localhost:8000/docs#/default/read_items_items__get
+- [[file:images/WS-y2023-0531.JPG][file:images/WS-y2023-0531.JPG]]
+***** FastAPI で生成した OpenAPI スキーマ
+- http://localhost:8000/openapi.json
+- [[file:images/WS-y2023-0532.JPG][file:images/WS-y2023-0532.JPG]]
+- [[file:images/WS-y2023-0533.JPG][file:images/WS-y2023-0533.JPG]]
+*** 引数 status_code
+- パスオペレーションデコレータに名前つき引数 status_code を指定すると、レスポンスのステータスコードを定義する。
+- OpenAPI スキーマの responses に反映される。
+- 参考情報
+  - https://fastapi.tiangolo.com/ja/tutorial/response-status-code/
+**** 例
+***** ソースコード
+#+BEGIN_EXAMPLE
+@app.post("/items_t2/", status_code=201)
+#+END_EXAMPLE
+***** FastAPI で生成したAPIドキュメント
+- http://localhost:8000/docs#/default/create_item_items_t2__post
+- [[file:images/WS-y2023-0536.JPG][file:images/WS-y2023-0536.JPG]]
+***** FastAPI で生成した OpenAPI スキーマ
+- http://localhost:8000/openapi.json
+- [[file:images/WS-y2023-0538.JPG][file:images/WS-y2023-0538.JPG]]
+*** 引数 summary, description
+- パスオペレーションデコレータに名前つき引数 summary を指定すると、エンドポイントの要約を定義する。
+- パスオペレーションデコレータに名前つき引数 description を指定すると、エンドポイントの説明文を定義する。
+- OpenAPI スキーマの summary, description に反映される。
+- 参考情報
+  - https://fastapi.tiangolo.com/ja/tutorial/path-operation-configuration/#summary-and-description
+**** 例
+***** ソースコード
+#+BEGIN_EXAMPLE
+@app.post("/items_t2/", summary="...", description="...",)
+#+END_EXAMPLE
+***** FastAPI で生成したAPIドキュメント
+- http://localhost:8000/docs#/default/create_item_items_t2__post
+- [[file:images/WS-y2023-0539.JPG][file:images/WS-y2023-0539.JPG]]
+***** FastAPI で生成した OpenAPI スキーマ
+- http://localhost:8000/openapi.json
+- [[file:images/WS-y2023-0540.JPG][file:images/WS-y2023-0540.JPG]]
+*** 引数 include_in_schema
+- パスオペレーションデコレータに名前つき引数 include_in_schema=False を指定すると、OpenAPI スキーマ から path operation を除外する。
+- 参考情報
+  - https://fastapi.tiangolo.com/ja/advanced/path-operation-advanced-configuration/#openapi
+**** 例
+***** ソースコード
+#+BEGIN_EXAMPLE
+@app.post("/items/", include_in_schema=False)
+#+END_EXAMPLE
+***** FastAPI で生成したAPIドキュメント
+- http://localhost:8000/docs#/default
+- [[file:images/WS-y2023-0541.JPG][file:images/WS-y2023-0541.JPG]]
+***** FastAPI で生成した OpenAPI スキーマ
+- http://localhost:8000/openapi.json
+- エンドポイント POST "/items/" が登場しない。
+*** 引数 responses
+- パスオペレーションデコレータに名前つき引数 responses を指定すると、
+- 参考情報
+  - https://fastapi.tiangolo.com/ja/advanced/additional-responses/
+**** 例
+***** ソースコード
+#+BEGIN_EXAMPLE
+@app.get(
+    "/items/{item_id}",
+    response_model=Item,
+    responses={
+        200: {
+            "content": {"image/png": {}},
+            "description": "Return the JSON item or an image.",
+        }
+    },
+)
+#+END_EXAMPLE
+***** FastAPI で生成したAPIドキュメント
+- http://localhost:8000/docs#/default/read_item_items__item_id__get
+- [[file:images/WS-y2023-0544.JPG][file:images/WS-y2023-0544.JPG]]
+- [[file:images/WS-y2023-0545.JPG][file:images/WS-y2023-0545.JPG]]
+- デコレータ引数 responses をつけない場合、
+  Media type: application/json だけ。
+- デコレータ引数 responses を付ける場合、
+  Media type: application/json と
+  Media type: image/png の2種類となる。
+***** FastAPI で生成した OpenAPI スキーマ
+- http://localhost:8000/openapi.json
+- [[file:images/WS-y2023-0547.JPG][file:images/WS-y2023-0547.JPG]]
+- responses 200 content に "application/json" と "image/png" の2種類が記されている。
