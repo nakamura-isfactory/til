@@ -1,0 +1,45 @@
+#+TITLE: Python をインストールする
+
+* Python をインストールする
+** Amazon Linux 2 に pyenv をインストールする
+- 前提
+  - git をインストールする。
+- https://github.com/pyenv/pyenv を読む。
+- スクリプト install_pyenv.sh
+  #+BEGIN_EXAMPLE
+  #!/usr/bin/bash -ue
+  which git
+  echo "read https://github.com/pyenv/pyenv#basic-github-checkout"
+  git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+  #:Optionally, try to compile a dynamic Bash extension to speed up Pyenv. 
+  #:Don't worry if it fails; Pyenv will still work normally:
+  cd ~/.pyenv && src/configure && make -C src || :
+  if ! grep -q pyenv ~/.bash_profile ; then
+      ( echo 'PATH=$PATH:~/.pyenv/bin' ; echo "export PATH" ) >> ~/.bash_profile
+      . ~/.bash_profile
+  fi
+  which pyenv
+  #:expected:~/.pyenv/bin/pyenv
+  pyenv --version
+  #:expected:pyenv 2.3.12-16-gc8daaa39
+  pyenv install --list | grep "^ *3" | tail -n 22
+  #:expected:3.9.16, 3.10.0, ..., 3.11.2
+  #+END_EXAMPLE
+- Amazon Linux 2 でなくても bash と git が動作するなら他の OS でもおそらく同じ方法でできる。
+** pyenv version コマンドと pyenv --version コマンドの違い
+- pyenv version コマンドだと現在アクティブになっている python のバージョンを出力する。
+- pyenv --version コマンドだと pyenv のバージョンを出力する。
+** pyenv を使ってインストール可能な python バージョンの候補を出力する
+#+BEGIN_EXAMPLE
+$ pyenv install --list | grep "^ *3" | tail -n 22
+  3.9.13
+  ( 中略 )
+  3.9.16
+  3.10.0
+  ( 中略 )
+  3.11.2
+  3.12.0a5
+  3.12-dev
+#+END_EXAMPLE
+** pyenv を使ってに Python をインストールする
+- TBD
