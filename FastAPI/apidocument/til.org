@@ -1,0 +1,41 @@
+* til
+** 〔課題1 request body の media type を application/x-www-form-urlencoded にする〕
+- Pydantic を使う方法
+  - ソースコード apidocument_1001.py
+  - https://fastapi.tiangolo.com/ja/tutorial/body/
+  - リクエストボディの Media type は application/json となる。
+  - 利点
+    - リクエストボディは json 形式なので人間がそのまま読める。
+  - 欠点
+    - Swagger UI で送信する際に、引数毎にプルダウンメニューなどの入力フォームを提供できない。
+    - Swagger UI で送信する際に、送信前に引数を検査できない。
+- Pydantic を使わない方法
+  - ソースコード apidocument_1002.py
+  - https://fastapi.tiangolo.com/ja/tutorial/request-forms/
+  - リクエストボディの Media type は application/x-www-form-urlencoded となるはず。
+  - 利点
+    - Swagger UI で送信する際に、引数毎にプルダウンメニューなどの入力フォームを提供できる。
+    - Swagger UI で送信する際に、送信前に引数を検査できる。
+  - 欠点
+    - リクエストボディはフォームエンコードされているので人間がそのまま読むのは困難。
+  - 疑問
+    - Swagger UI を使わずに送信し、データが型違反している場合はバリデーション不合格になるか？
+      - おそらくなる。未検証。
+      - https://qiita.com/sand/items/207f306bdacdc0fb9571
+        - もちろんエラーデータのRequestに対しては、Bodyの時と同じようにエラーとなります。
+        - サーバ側は422 Unprocessable Entityを出力し、クライアント側には以下のエラーメッセージを送ります。
+          {"detail":[{"loc":["body","price"],"msg":"value is not a valid float","type":"type_error.float"}]}
+** 〔課題2 request body の base_theme_url は required でない〕
+- apidocument_1002.py
+  - base_theme_url: str = Form()
+    と記すと、 required である扱いになる。
+  - base_theme_url: Optional[str] = Form()
+    と記すと、 required である扱いになる。
+  - base_theme_url: Optional[str] = Form(None)
+    と記すと、 required でない扱いになる。
+- 参考情報
+  - FastAPI チュートリアル
+    - str = Form() 形式で定義した引数を、 not required にする方法は見当たらない。
+  - https://github.com/tiangolo/fastapi/issues/854
+    - my_optional_field: Optional[int] = Form(None)
+    - これが str = Form() 形式で定義した引数を、 not required にする方法。

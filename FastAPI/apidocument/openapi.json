@@ -1,0 +1,156 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/users/{userId}/projects/add": {
+      "post": {
+        "summary": "ファイルをインポートしないでプロジェクトを作成する",
+        "description": "ファイルをインポートしないでテーマ、テンプレートを指定してプロジェクトを作成する",
+        "operationId": "create_project_users__userId__projects_add_post",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Userid",
+              "type": "integer"
+            },
+            "name": "userId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectAddRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Return the JSON item or an image.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "application/xml": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "title": "HTTPValidationError",
+        "type": "object",
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "Project": {
+        "title": "Project",
+        "required": [
+          "project_id"
+        ],
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "title": "Project Id",
+            "type": "integer"
+          }
+        }
+      },
+      "ProjectAddRequestBody": {
+        "title": "ProjectAddRequestBody",
+        "required": [
+          "theme_selection",
+          "base_theme_url",
+          "base_theme_id_1",
+          "base_theme_id_2",
+          "template_id"
+        ],
+        "type": "object",
+        "properties": {
+          "theme_selection": {
+            "title": "Theme Selection",
+            "type": "string"
+          },
+          "base_theme_url": {
+            "title": "Base Theme Url",
+            "type": "string"
+          },
+          "base_theme_id_1": {
+            "title": "Base Theme Id 1",
+            "type": "string"
+          },
+          "base_theme_id_2": {
+            "title": "Base Theme Id 2",
+            "type": "string"
+          },
+          "template_id": {
+            "title": "Template Id",
+            "type": "string"
+          }
+        }
+      },
+      "ValidationError": {
+        "title": "ValidationError",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "loc": {
+            "title": "Location",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
