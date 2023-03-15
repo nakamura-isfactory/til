@@ -1,0 +1,236 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/r1": {
+      "get": {
+        "summary": "R1",
+        "operationId": "r1_r1_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/r2": {
+      "get": {
+        "summary": "R2",
+        "operationId": "r2_r2_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/r3": {
+      "get": {
+        "summary": "R3",
+        "operationId": "r3_r3_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/items/{item_id}": {
+      "get": {
+        "summary": "Read Item",
+        "operationId": "read_item_items__item_id__get",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Item Id",
+              "type": "string"
+            },
+            "name": "item_id",
+            "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Img",
+              "type": "boolean"
+            },
+            "name": "img",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              },
+              "image/png": {}
+            }
+          },
+          "302": {
+            "description": "The item was moved"
+          },
+          "403": {
+            "description": "Not enough privileges"
+          },
+          "404": {
+            "description": "Item not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images/{item_id}": {
+      "get": {
+        "summary": "Read",
+        "operationId": "read_images__item_id__get",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Item Id",
+              "type": "string"
+            },
+            "name": "item_id",
+            "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Img",
+              "type": "boolean"
+            },
+            "name": "img",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "image/png": {}
+            }
+          },
+          "302": {
+            "description": "The item was moved"
+          },
+          "403": {
+            "description": "Not enough privileges"
+          },
+          "404": {
+            "description": "Item not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "title": "HTTPValidationError",
+        "type": "object",
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "Item": {
+        "title": "Item",
+        "required": [
+          "id",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string"
+          }
+        }
+      },
+      "ValidationError": {
+        "title": "ValidationError",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "loc": {
+            "title": "Location",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

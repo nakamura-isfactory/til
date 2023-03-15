@@ -25,17 +25,32 @@
         - もちろんエラーデータのRequestに対しては、Bodyの時と同じようにエラーとなります。
         - サーバ側は422 Unprocessable Entityを出力し、クライアント側には以下のエラーメッセージを送ります。
           {"detail":[{"loc":["body","price"],"msg":"value is not a valid float","type":"type_error.float"}]}
-** 〔課題2 request body の base_theme_url は required でない〕
-- apidocument_1002.py
+** 〔課題2 request 引数の一部を not required にする方法〕
+- ソースコード apidocument_1002.py
   - base_theme_url: str = Form()
-    と記すと、 required である扱いになる。
+    と記すと、 required になる。
   - base_theme_url: Optional[str] = Form()
-    と記すと、 required である扱いになる。
+    と記すと、 required になる。
   - base_theme_url: Optional[str] = Form(None)
-    と記すと、 required でない扱いになる。
+    と記すと、 not required になる。
 - 参考情報
   - FastAPI チュートリアル
     - str = Form() 形式で定義した引数を、 not required にする方法は見当たらない。
   - https://github.com/tiangolo/fastapi/issues/854
     - my_optional_field: Optional[int] = Form(None)
     - これが str = Form() 形式で定義した引数を、 not required にする方法。
+** 〔課題3 レスポンスの Media type を json 以外にする方法〕
+- 参考情報1
+  - https://fastapi.tiangolo.com/ja/advanced/additional-responses/
+    - Additional Responses in OpenAPI - FastAPI
+- 参考情報1の「Additional Response with model」の例にあるように、
+  FastAPI get デコレータに response_model と responses を指定すると、
+  OpenAPI スキーマには2つの Media type が定義される。
+  1つ目はもとからある Media type: application/json 。
+  2つ目は responses で指定した Media type: image/png 。
+- もとからある Media type: application/json はなしで
+  他の Media type だけを指定したい場合、
+  response_model を指定しない AND responses と response_class を両方指定する。
+- 例えば画像ファイルを読み込んでレスポンスボディにするなら、
+  response_class=FileResponse を指定する。
+- ソースコード apidocument_1003.py
