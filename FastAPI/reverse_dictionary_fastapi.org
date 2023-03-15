@@ -1,0 +1,56 @@
+#+TITLE: FastAPI 逆引き辞典
+
+* FastAPI FastAPI 逆引き辞典
+** 情報源
+- FastAPI 公式ドキュメント
+  - https://fastapi.tiangolo.com/ja/tutorial/
+  - https://fastapi.tiangolo.com/tutorial/
+** 〔レスポンスとしてJSONデータ以外を送信する〕
+- FileResponse などのオブジェクトを返す。
+- https://fastapi.tiangolo.com/ja/advanced/custom-response/#fileresponse
+  - カスタムレスポンス - HTML、ストリーム、ファイル、その他のレスポンス - FastAPI
+  - FileResponse
+    - レスポンスとしてファイルを非同期的にストリームします。
+      #+BEGIN_EXAMPLE
+      from fastapi import FastAPI
+      from fastapi.responses import FileResponse
+      some_file_path = "large-video-file.mp4"
+      app = FastAPI()
+      @app.get("/")
+      async def main():
+          return FileResponse(some_file_path)
+      #+END_EXAMPLE
+- https://qiita.com/aKuad/items/d213dc1f7075ab2dd69a#fileresponse
+  - FastAPI 色々なレスポンスまとめ - Qiita
+    #+BEGIN_EXAMPLE
+    from fastapi import FastAPI
+    from fastapi.responses import FileResponse
+    app = FastAPI()
+    @app.get("/")
+    def index():
+      return FileResponse(path="path-to/file.txt", media_type="text/plain")
+    #+END_EXAMPLE
+** 〔レスポンスとしてJSONデータ以外を送信する、さらにOpenAPIスキーマに反映する〕
+- パスオペレーションのデコレータに responses と response_class を記す。
+- https://stackoverflow.com/questions/72856485/remove-default-application-json-header-from-fastapi-response
+  #+BEGIN_EXAMPLE
+  @app.get("/legacy/", responses=response_examples, response_class=XMLResponse)
+  def get_legacy_data():
+  #+END_EXAMPLE
+- 実行例
+  - ソースコード
+    - file:apidocument_1003.py
+      #+BEGIN_EXAMPLE
+      @app.get(
+          "/images2/{item_id}",
+          responses={**responses, 200: {"content": {"image/png": {}}}},
+          response_class=FileResponse
+      )
+      #+END_EXAMPLE
+  - OpenAPIスキーマ
+    - http://127.0.0.1:8000/docs#/default/images2_images2__item_id__get
+      - [[file:images/WS-y2023-0680.JPG][file:images/WS-y2023-0680.JPG]]
+      - Media type 1通りでデコレータで指定したものになった。
+** 〔エンドポイントの説明を記してOpenAPIスキーマに反映する〕
+- TBD
+

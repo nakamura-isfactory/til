@@ -5,7 +5,7 @@
 - 前提
   - git をインストールする。
 - https://github.com/pyenv/pyenv を読む。
-- スクリプト install_pyenv.sh
+- スクリプト file:install_pyenv.sh
   #+BEGIN_EXAMPLE
   #!/usr/bin/bash -ue
   which git
@@ -41,5 +41,5 @@ $ pyenv install --list | grep "^ *3" | tail -n 22
   3.12.0a5
   3.12-dev
 #+END_EXAMPLE
-** pyenv を使ってに Python をインストールする
+** pyenv を使って Python をインストールする
 - TBD
