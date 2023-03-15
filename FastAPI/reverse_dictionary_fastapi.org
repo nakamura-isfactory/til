@@ -6,6 +6,7 @@
   - https://fastapi.tiangolo.com/ja/tutorial/
   - https://fastapi.tiangolo.com/tutorial/
 ** 〔レスポンスとしてJSONデータ以外を送信する〕
+- FileResponse などのオブジェクトを返す。
 - https://fastapi.tiangolo.com/ja/advanced/custom-response/#fileresponse
   - カスタムレスポンス - HTML、ストリーム、ファイル、その他のレスポンス - FastAPI
   - FileResponse
@@ -30,6 +31,7 @@
       return FileResponse(path="path-to/file.txt", media_type="text/plain")
     #+END_EXAMPLE
 ** 〔レスポンスとしてJSONデータ以外を送信する、さらにOpenAPIスキーマに反映する〕
+- パスオペレーションのデコレータに responses と response_class を記す。
 - https://stackoverflow.com/questions/72856485/remove-default-application-json-header-from-fastapi-response
   #+BEGIN_EXAMPLE
   @app.get("/legacy/", responses=response_examples, response_class=XMLResponse)
@@ -49,3 +51,6 @@
     - http://127.0.0.1:8000/docs#/default/images2_images2__item_id__get
       - [[file:images/WS-y2023-0680.JPG][file:images/WS-y2023-0680.JPG]]
       - Media type 1通りでデコレータで指定したものになった。
+** 〔エンドポイントの説明を記してOpenAPIスキーマに反映する〕
+- TBD
+
