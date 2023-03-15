@@ -25,6 +25,15 @@
   pyenv install --list | grep "^ *3" | tail -n 22
   #:expected:3.9.16, 3.10.0, ..., 3.11.2
   #+END_EXAMPLE
+- スクリプト file:Makefile より一部抜粋。
+  #+BEGIN_EXAMPLE
+  version/pyenv.txt:
+      ./install_pyenv.sh
+  #+END_EXAMPLE
+- 以下のコマンドを実行する。
+  #+BEGIN_EXAMPLE
+  $ make version/pyenv.txt
+  #+END_EXAMPLE
 - Amazon Linux 2 でなくても bash と git が動作するなら他の OS でもおそらく同じ方法でできる。
 ** pyenv version コマンドと pyenv --version コマンドの違い
 - pyenv version コマンドだと現在アクティブになっている python のバージョンを出力する。
@@ -42,4 +51,17 @@ $ pyenv install --list | grep "^ *3" | tail -n 22
   3.12-dev
 #+END_EXAMPLE
 ** pyenv を使って Python をインストールする
-- TBD
+- スクリプト file:install_python.sh より一部抜粋。
+  #+BEGIN_EXAMPLE
+      pyenv install "${EXPECTED_PYTHON_VERSION}"
+      pyenv global "${EXPECTED_PYTHON_VERSION}"
+  #+END_EXAMPLE
+- スクリプト file:Makefile より一部抜粋。
+  #+BEGIN_EXAMPLE
+  version/python311.txt: version/pyenv.txt
+      EXPECTED_PYTHON_VERSION=3.11.2 bash -uex ./install_python.sh
+  #+END_EXAMPLE
+- 以下のコマンドを実行する。
+  #+BEGIN_EXAMPLE
+  $ make version/python311.txt
+  #+END_EXAMPLE

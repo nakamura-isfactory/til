@@ -52,5 +52,7 @@
       - [[file:images/WS-y2023-0680.JPG][file:images/WS-y2023-0680.JPG]]
       - Media type 1通りでデコレータで指定したものになった。
 ** 〔エンドポイントの説明を記してOpenAPIスキーマに反映する〕
-- TBD
+- Python docstring 形式で関数の説明を記せば、エンドポイントの説明として
+  OpenAPI スキーマに反映される。
+- 
 
