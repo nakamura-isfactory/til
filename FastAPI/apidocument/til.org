@@ -54,3 +54,19 @@
 - 例えば画像ファイルを読み込んでレスポンスボディにするなら、
   response_class=FileResponse を指定する。
 - ソースコード apidocument_1003.py
+** 〔課題4 Path Operation に説明を記す〕
+- https://fastapi.tiangolo.com/ja/tutorial/path-operation-configuration/?h=description#summary-and-description
+- ソースコード apidocument_1004.py
+- app = FastAPI(description="API の 説明") と記せば、 API に説明が反映される。
+- @app.post(summary="Create an item") と記せば、 Path Operation に説明が反映される。
+- q: int = 5 の代わりに q: int = Query(5, description="This description shows up") 
+  と記せば、 Query parameter に説明が反映される。
+- パラメータが Query parameter ではなく Path parameter である場合、表記方法は不明。 TBD
+- パラメータが Query parameter ではなく Form data である場合、
+  Query の代わりに Form や File を使う。
+- パラメータが python オブジェクトで型定義を Pydantic で行う場合、
+  Pydantic 表現の中に説明を加える書き方がある。詳細は未習得。
+  FastAPI チュートリアルを参照。
+
+
+
